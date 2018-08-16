@@ -54,4 +54,3 @@ class PolicySearch_Agent():
             self.w = self.best_w
             self.noise_scale = min(2.0 * self.noise_scale, 3.2)
         self.w = self.w + self.noise_scale * np.random.normal(size=self.w.shape)  # equal noise in all directions
-        
