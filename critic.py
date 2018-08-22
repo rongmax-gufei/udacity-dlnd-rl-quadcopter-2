@@ -15,6 +15,9 @@ class Critic:
         """
         self.state_size = state_size
         self.action_size = action_size
+
+        # Initialize any other variables here
+
         self.build_model()
 
     def build_model(self):
@@ -24,13 +27,17 @@ class Critic:
         states = layers.Input(shape=(self.state_size,), name='states')
         actions = layers.Input(shape=(self.action_size,), name='actions')
 
+        # Try different layer sizes, activations, add batch normalization, regularizers, etc.
+
         # Add hidden layer(s) for state pathway
         net_states = layers.Dense(units=32, activation='relu')(states)
         net_states = layers.BatchNormalization()(net_states)
         net_states = layers.Dropout(0.5)(net_states)
+
         net_states = layers.Dense(units=64, activation='relu')(net_states)
         net_states = layers.BatchNormalization()(net_states)
         net_states = layers.Dropout(0.5)(net_states)
+
         net_states = layers.Dense(units=32, activation='relu')(net_states)
         net_states = layers.BatchNormalization()(net_states)
         net_states = layers.Dropout(0.5)(net_states)
@@ -39,9 +46,11 @@ class Critic:
         net_actions = layers.Dense(units=32, activation='relu')(actions)
         net_actions = layers.BatchNormalization()(net_actions)
         net_actions = layers.Dropout(0.5)(net_actions)
+
         net_actions = layers.Dense(units=64, activation='relu')(net_actions)
         net_actions = layers.BatchNormalization()(net_actions)
         net_actions = layers.Dropout(0.5)(net_actions)
+
         net_actions = layers.Dense(units=32, activation='relu')(net_actions)
         net_actions = layers.BatchNormalization()(net_actions)
         net_actions = layers.Dropout(0.5)(net_actions)

@@ -28,8 +28,8 @@ class DDPG():
 
         # Noise process
         self.exploration_mu = 0
-        self.exploration_theta = 0.08
-        self.exploration_sigma = 0.15
+        self.exploration_theta = 0.08 #0.15
+        self.exploration_sigma = 0.15 #0.2
         self.noise = OUNoise(self.action_size, self.exploration_mu, self.exploration_theta, self.exploration_sigma)
 
         # Replay memory
@@ -38,29 +38,30 @@ class DDPG():
         self.memory = ReplayBuffer(self.buffer_size, self.batch_size)
 
         # Algorithm parameters
-        self.gamma = 0.95  # a discount factor
-        self.tau = 0.001  #  soft update of target parameters
+        self.gamma = 0.99  # discount factor 0.95
+        self.tau = 0.01  # for soft update of target parameters 0.001
 
-        # Score tracker and learning parameters
-        self.score = 0
-        self.best_score = -np.inf
+        # Score and learning params
         self.count = 0
+        self.score = 0
+        self.max_score = -np.inf
 
     def reset_episode(self):
+
+        # Total reward
         self.total_reward = 0.0
         self.count = 0
+
         self.noise.reset()
         state = self.task.reset()
         self.last_state = state
         return state
 
     def step(self, action, reward, next_state, done):
-        
-        # Save (experience) reward
+        # Save experience / reward
         self.total_reward += reward
         self.count += 1
 
-         # Save (experience) reward
         self.memory.add(self.last_state, action, reward, next_state, done)
 
         # Learn, if enough samples are available in memory
@@ -72,15 +73,16 @@ class DDPG():
         self.last_state = next_state
 
     def act(self, states):
-        #action based on given state and policy
+        """Returns actions for given state(s) as per current policy."""
         states = np.reshape(states, [-1, self.state_size])
         action = self.actor_local.model.predict(states)[0]
+        # add some noise for exploration
         return list(action + self.noise.sample())
 
     def learn(self, experiences):
         """Update policy and value parameters using given batch of reward tuples."""
-        
-        # turn reward experience into separate arrays for each element (states, actions, rewards, etc.)
+
+        # Convert experience tuples to separate arrays for each element (states, actions, rewards, etc.)
         states = np.vstack([e.state for e in experiences if e is not None])
         actions = np.array([e.action for e in experiences if e is not None]).astype(np.float32).reshape(-1, self.action_size)
         rewards = np.array([e.reward for e in experiences if e is not None]).astype(np.float32).reshape(-1, 1)
@@ -103,13 +105,12 @@ class DDPG():
         self.soft_update(self.critic_local.model, self.critic_target.model)
         self.soft_update(self.actor_local.model, self.actor_target.model)   
 
-        # track best score
+        # Max score
         self.score = self.total_reward / float(self.count) if self.count else 0.0
-        if self.score > self.best_score:
-            self.best_score = self.score
+        if self.score > self.max_score:
+            self.max_score = self.score
 
     def soft_update(self, local_model, target_model):
-        
         """Soft update model parameters."""
         local_weights = np.array(local_model.get_weights())
         target_weights = np.array(target_model.get_weights())
