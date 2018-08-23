@@ -28,8 +28,8 @@ class DDPG():
 
         # Noise process
         self.exploration_mu = 0
-        self.exploration_theta = 0.08 #0.15
-        self.exploration_sigma = 0.15 #0.2
+        self.exploration_theta = 0.08
+        self.exploration_sigma = 0.15
         self.noise = OUNoise(self.action_size, self.exploration_mu, self.exploration_theta, self.exploration_sigma)
 
         # Replay memory
@@ -38,13 +38,13 @@ class DDPG():
         self.memory = ReplayBuffer(self.buffer_size, self.batch_size)
 
         # Algorithm parameters
-        self.gamma = 0.99  # discount factor 0.95
-        self.tau = 0.01  # for soft update of target parameters 0.001
+        self.gamma = 0.95  # discount factor
+        self.tau = 0.001  # for soft update of target parameters
 
         # Score and learning params
         self.count = 0
         self.score = 0
-        self.max_score = -np.inf
+        self.max_score = -9999
 
     def reset_episode(self):
 
@@ -105,8 +105,8 @@ class DDPG():
         self.soft_update(self.critic_local.model, self.critic_target.model)
         self.soft_update(self.actor_local.model, self.actor_target.model)   
 
-        # Max score
-        self.score = self.total_reward / float(self.count) if self.count else 0.0
+        # get the best score
+        self.score = self.total_reward / float(self.count)
         if self.score > self.max_score:
             self.max_score = self.score
 
