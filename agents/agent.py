@@ -44,6 +44,7 @@ class DDPG():
 
         # custom params
         self.stepIndex = 0
+        self.totalReward = 0.0
         self.avgScore = 0
         self.bestScore = -np.inf
 

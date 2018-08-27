@@ -32,23 +32,12 @@ class Task():
         """Uses current pose of sim to return reward."""
         # reward = 1.-.3*(abs(self.sim.pose[:3] - self.target_pos)).sum()
 
-        reward = 0.0
-
-        # z轴方向奖励
-        reward += self.sim.v[2]
-
-        # z轴方向接近目标值的奖励
-        reward -= (abs(self.sim.pose[2] - self.target_pos[2])) / 2.0
-
-        # 水平方向的灵敏度
-        reward -= (abs(self.sim.pose[:2] - self.target_pos[:2])).sum() / 4.0
-
-        reward -= (abs(self.sim.angular_v[:3])).sum()
-
         # project 1 reward func
         # reward = -min(abs(self.target_z - pose.position.z), 20.0)
         # reward = -min(abs(self.sim.pose[:3] - self.target_pos), 20.0)
+
         # reward = np.tanh(1 - .3*(abs(self.sim.pose[:3] - self.target_pos))).sum()
+
         return reward
 
     def step(self, rotor_speeds):
