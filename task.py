@@ -36,7 +36,7 @@ class Task():
         # reward = -min(abs(self.target_z - pose.position.z), 20.0)
         # reward = -min(abs(self.sim.pose[:3] - self.target_pos), 20.0)
 
-        # reward = np.tanh(1 - .3*(abs(self.sim.pose[:3] - self.target_pos))).sum()
+        reward = np.tanh(1 - .3*(abs(self.sim.pose[:3] - self.target_pos))).sum()
 
         return reward
 
