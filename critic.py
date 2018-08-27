@@ -2,6 +2,7 @@ from keras import backend as K
 from keras import layers, models, optimizers
 
 
+# 评论者模型
 class Critic:
     """Critic (Value) Model."""
 

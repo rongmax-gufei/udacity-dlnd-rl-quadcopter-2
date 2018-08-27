@@ -2,6 +2,7 @@ import random
 from collections import namedtuple, deque
 
 
+# 回放存储器或缓冲区来存储和回调经验元
 class ReplayBuffer:
     """Fixed-size buffer to store experience tuples."""
 

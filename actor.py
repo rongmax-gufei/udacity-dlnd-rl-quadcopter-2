@@ -1,6 +1,8 @@
 from keras import layers, models, optimizers
 from keras import backend as K
 
+
+# DDPG：行动者（策略）模型
 class Actor:
     """Actor (Policy) Model."""
 

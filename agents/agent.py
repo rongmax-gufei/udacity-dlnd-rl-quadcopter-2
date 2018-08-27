@@ -5,6 +5,7 @@ from ou_noise import OUNoise
 from memory import ReplayBuffer
 
 
+# 智能体
 class DDPG():
     """Reinforcement Learning agent , learning using DDPG."""
     def __init__(self, task):
