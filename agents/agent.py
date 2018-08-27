@@ -42,16 +42,16 @@ class DDPG():
         self.gamma = 0.97  # discount factor 0.99
         self.tau = 0.001  # for soft update of target parameters 0.01
 
-        # init count、score and best_score params
-        self.count = 0
-        self.score = 0
-        self.best_score = -np.inf
+        # custom params
+        self.stepIndex = 0
+        self.avgScore = 0
+        self.bestScore = -np.inf
 
     def reset_episode(self):
 
         # Reset total reward and count
-        self.total_reward = 0.0
-        self.count = 0
+        self.totalReward = 0.0
+        self.stepIndex = 0
 
         self.noise.reset()
         state = self.task.reset()
@@ -60,8 +60,8 @@ class DDPG():
 
     def step(self, action, reward, next_state, done):
         # Save experience / reward
-        self.total_reward += reward
-        self.count += 1
+        self.totalReward += reward
+        self.stepIndex += 1
 
         self.memory.add(self.last_state, action, reward, next_state, done)
 
@@ -107,9 +107,9 @@ class DDPG():
         self.soft_update(self.actor_local.model, self.actor_target.model)   
 
         # get the best score
-        self.score = self.total_reward / float(self.count) if self.count else 0.0
-        if self.score > self.best_score:
-            self.best_score = self.score
+        self.avgScore = self.totalReward / float(self.stepIndex)
+        if self.avgScore > self.bestScore:
+            self.bestScore = self.avgScore
 
     def soft_update(self, local_model, target_model):
         """Soft update model parameters."""

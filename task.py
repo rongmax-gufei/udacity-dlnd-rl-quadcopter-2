@@ -60,7 +60,7 @@ class Task():
             reward += self.get_reward()
             pose_all.append(self.sim.pose)
             if self.sim.pose[2] >= self.target_pos[2]:
-                reward += 10.0  # reward
+                reward += 100.0  # reward
                 done = True
         next_state = np.concatenate(pose_all)
         return next_state, reward, done
