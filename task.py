@@ -50,9 +50,9 @@ class Task():
 
         # z轴上升奖励
         if self.sim.v[2] > 0:
-            reward = 10 * self.sim.v[2]
+            reward += 10 * self.sim.v[2]
         else:
-            reward = -100.0
+            reward -= 100.0
 
         # 三个欧拉角的弧度
         reward -= (abs(self.sim.angular_v[:3])).sum()
