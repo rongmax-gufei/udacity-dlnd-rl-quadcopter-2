@@ -36,15 +36,15 @@ class Actor:
         # Add hidden layers
         net = layers.Dense(units=self.num_units, activation='relu')(states)
         net = layers.BatchNormalization()(net)
-        # net = layers.Dropout(0.5)(net)
+        net = layers.Dropout(0.5)(net)
 
         net = layers.Dense(units=self.num_units * 2, activation='relu')(net)
         net = layers.BatchNormalization()(net)
-        # net = layers.Dropout(0.5)(net)
+        net = layers.Dropout(0.5)(net)
 
         net = layers.Dense(units=self.num_units, activation='relu')(net)
         net = layers.BatchNormalization()(net)
-        # net = layers.Dropout(0.5)(net)
+        net = layers.Dropout(0.5)(net)
 
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.
 
