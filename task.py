@@ -32,11 +32,20 @@ class Task():
         """Uses current pose of sim to return reward."""
         # reward = 1.-.3*(abs(self.sim.pose[:3] - self.target_pos)).sum()
 
-        # project 1 reward func
-        # reward = -min(abs(self.target_z - pose.position.z), 20.0)
-        # reward = -min(abs(self.sim.pose[:3] - self.target_pos), 20.0)
+        reward = 0.0
 
-        reward = np.tanh(1 - .3*(abs(self.sim.pose[:3] - self.target_pos))).sum()
+        # 沿z轴方向的奖励
+        reward += self.sim.v[2]
+        # 上升奖励
+        if self.sim.v[2] > 0:
+            reward = 10 * self.sim.v[2]
+        else:
+            reward = -10.0
+        if self.sim.pose[2] >= self.target_pos[2]:
+            reward += 10.0
+
+        # 沿z轴接近目标位置的奖励
+        reward -= (abs(self.sim.pose[2] - self.target_pos[2])) / 2.0
 
         return reward
 
@@ -48,9 +57,6 @@ class Task():
             done = self.sim.next_timestep(rotor_speeds)  # update the sim pose and velocities
             reward += self.get_reward()
             pose_all.append(self.sim.pose)
-            if self.sim.pose[2] >= self.target_pos[2]:
-                reward += 100.0  # reward
-                done = True
         next_state = np.concatenate(pose_all)
         return next_state, reward, done
 
