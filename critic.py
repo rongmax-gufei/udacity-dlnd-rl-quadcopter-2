@@ -33,28 +33,28 @@ class Critic:
         # Add hidden layer(s) for state pathway
         net_states = layers.Dense(units=32, activation='relu')(states)
         net_states = layers.BatchNormalization()(net_states)
-        net_states = layers.Dropout(0.5)(net_states)
+        # net_states = layers.Dropout(0.5)(net_states)
 
         net_states = layers.Dense(units=64, activation='relu')(net_states)
         net_states = layers.BatchNormalization()(net_states)
-        net_states = layers.Dropout(0.5)(net_states)
+        # net_states = layers.Dropout(0.5)(net_states)
 
         net_states = layers.Dense(units=32, activation='relu')(net_states)
         net_states = layers.BatchNormalization()(net_states)
-        net_states = layers.Dropout(0.5)(net_states)
+        # net_states = layers.Dropout(0.5)(net_states)
 
         # Add hidden layer(s) for action pathway
         net_actions = layers.Dense(units=32, activation='relu')(actions)
         net_actions = layers.BatchNormalization()(net_actions)
-        net_actions = layers.Dropout(0.5)(net_actions)
+        # net_actions = layers.Dropout(0.5)(net_actions)
 
         net_actions = layers.Dense(units=64, activation='relu')(net_actions)
         net_actions = layers.BatchNormalization()(net_actions)
-        net_actions = layers.Dropout(0.5)(net_actions)
+        # net_actions = layers.Dropout(0.5)(net_actions)
 
         net_actions = layers.Dense(units=32, activation='relu')(net_actions)
         net_actions = layers.BatchNormalization()(net_actions)
-        net_actions = layers.Dropout(0.5)(net_actions)
+        # net_actions = layers.Dropout(0.5)(net_actions)
 
         # Combine state and action pathways
         net = layers.Add()([net_states, net_actions])
@@ -67,7 +67,7 @@ class Critic:
         self.model = models.Model(inputs=[states, actions], outputs=Q_values)
 
         # Define optimizer and compile model for training with built-in loss function
-        optimizer = optimizers.Adam()
+        optimizer = optimizers.Adam(lr=0.001)  # learning rate, normal setting is actor lr=0.0001, critic lr=0.001
         self.model.compile(optimizer=optimizer, loss='mse')
 
         # Compute action gradients (derivative of Q values w.r.t. to actions)

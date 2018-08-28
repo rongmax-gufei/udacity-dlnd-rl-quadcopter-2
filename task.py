@@ -44,18 +44,18 @@ class Task():
         # 沿z轴接近目标位置的奖励
         reward -= (abs(self.sim.pose[2] - self.target_pos[2])) / 2.0
 
-        # 达到/超过目标位置奖励
-        if self.sim.pose[2] >= self.target_pos[2]:
-            reward += 100.0
-
         # z轴上升奖励
         if self.sim.v[2] > 0:
             reward += 10 * self.sim.v[2]
         else:
-            reward -= 100.0
+            reward -= 10.0
 
         # 三个欧拉角的弧度
         reward -= (abs(self.sim.angular_v[:3])).sum()
+
+        # 达到/超过目标位置奖励
+        if self.sim.pose[2] >= self.target_pos[2]:
+            reward += 100.0
 
         return reward
 
