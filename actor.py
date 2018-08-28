@@ -35,9 +35,11 @@ class Actor:
         net = layers.Dense(units=32, activation='relu')(states)
         net = layers.BatchNormalization()(net)
         net = layers.Dropout(0.5)(net)
+
         net = layers.Dense(units=64, activation='relu')(net)
         net = layers.BatchNormalization()(net)
         net = layers.Dropout(0.5)(net)
+
         net = layers.Dense(units=32, activation='relu')(net)
         net = layers.BatchNormalization()(net)
         net = layers.Dropout(0.5)(net)
