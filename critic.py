@@ -6,18 +6,20 @@ from keras import layers, models, optimizers
 class Critic:
     """Critic (Value) Model."""
 
-    def __init__(self, state_size, action_size):
+    def __init__(self, state_size, action_size, num_units=32):
         """Initialize parameters and build model.
 
         Params
         ======
             state_size (int): Dimension of each state
             action_size (int): Dimension of each action
+            num_units (int): Number of units per layer
         """
         self.state_size = state_size
         self.action_size = action_size
 
         # Initialize any other variables here
+        self.num_units = num_units
 
         self.build_model()
 
@@ -31,28 +33,24 @@ class Critic:
         # Try different layer sizes, activations, add batch normalization, regularizers, etc.
 
         # Add hidden layer(s) for state pathway
-        net_states = layers.Dense(units=32, activation='relu')(states)
+        net_states = layers.Dense(units=self.num_units, activation='relu')(states)
         net_states = layers.BatchNormalization()(net_states)
         # net_states = layers.Dropout(0.5)(net_states)
-
-        net_states = layers.Dense(units=64, activation='relu')(net_states)
+        net_states = layers.Dense(units=self.num_units * 2, activation='relu')(net_states)
         net_states = layers.BatchNormalization()(net_states)
         # net_states = layers.Dropout(0.5)(net_states)
-
-        net_states = layers.Dense(units=32, activation='relu')(net_states)
+        net_states = layers.Dense(units=self.num_units, activation='relu')(net_states)
         net_states = layers.BatchNormalization()(net_states)
         # net_states = layers.Dropout(0.5)(net_states)
 
         # Add hidden layer(s) for action pathway
-        net_actions = layers.Dense(units=32, activation='relu')(actions)
+        net_actions = layers.Dense(units=self.num_units, activation='relu')(actions)
         net_actions = layers.BatchNormalization()(net_actions)
         # net_actions = layers.Dropout(0.5)(net_actions)
-
-        net_actions = layers.Dense(units=64, activation='relu')(net_actions)
+        net_actions = layers.Dense(units=self.num_units * 2, activation='relu')(net_actions)
         net_actions = layers.BatchNormalization()(net_actions)
         # net_actions = layers.Dropout(0.5)(net_actions)
-
-        net_actions = layers.Dense(units=32, activation='relu')(net_actions)
+        net_actions = layers.Dense(units=self.num_units, activation='relu')(net_actions)
         net_actions = layers.BatchNormalization()(net_actions)
         # net_actions = layers.Dropout(0.5)(net_actions)
 

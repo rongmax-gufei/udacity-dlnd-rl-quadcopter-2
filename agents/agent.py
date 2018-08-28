@@ -43,12 +43,15 @@ class DDPG():
         self.tau = 0.001  # for soft update of target parameters 0.01
 
         # Score tracker and learning parameters
+        self.total_reward = None
         self.count = 0
         self.score = 0
         self.best_score = -np.inf
+        self.last_state = None
 
     def reset_episode(self):
-        self.total_reward = 0.0
+
+        self.total_reward = None
         self.count = 0
 
         self.noise.reset()
@@ -57,10 +60,15 @@ class DDPG():
         return state
 
     def step(self, action, reward, next_state, done):
-        # Save experience / reward
-        self.total_reward += reward
+
+        if self.total_reward:
+            self.total_reward += reward
+        else:
+            self.total_reward = reward
+
         self.count += 1
 
+        # Save experience / reward
         self.memory.add(self.last_state, action, reward, next_state, done)
 
         # Learn, if enough samples are available in memory
@@ -102,11 +110,11 @@ class DDPG():
 
         # Soft-update target models
         self.soft_update(self.critic_local.model, self.critic_target.model)
-        self.soft_update(self.actor_local.model, self.actor_target.model)   
+        self.soft_update(self.actor_local.model, self.actor_target.model)
 
-        # get the best score
-        self.score = self.total_reward / float(self.count) if self.count else 0.0
-        if self.score > self.best_score:
+        # track best score
+        self.score = self.total_reward / float(self.count) if self.count else -np.inf
+        if self.best_score < self.score:
             self.best_score = self.score
 
     def soft_update(self, local_model, target_model):

@@ -6,7 +6,7 @@ from keras import backend as K
 class Actor:
     """Actor (Policy) Model."""
 
-    def __init__(self, state_size, action_size, action_low, action_high):
+    def __init__(self, state_size, action_size, action_low, action_high, num_units=32):
         """Initialize parameters and build model.
 
         Params
@@ -15,6 +15,7 @@ class Actor:
             action_size (int): Dimension of each action
             action_low (array): Min value of each action dimension
             action_high (array): Max value of each action dimension
+            num_units (int): Number of units per layer
         """
         self.state_size = state_size
         self.action_size = action_size
@@ -23,6 +24,7 @@ class Actor:
         self.action_range = self.action_high - self.action_low
 
         # Initialize any other variables here
+        self.num_units = num_units
 
         self.build_model()
 
@@ -32,15 +34,15 @@ class Actor:
         states = layers.Input(shape=(self.state_size,), name='states')
 
         # Add hidden layers
-        net = layers.Dense(units=32, activation='relu')(states)
+        net = layers.Dense(units=self.num_units, activation='relu')(states)
         net = layers.BatchNormalization()(net)
         # net = layers.Dropout(0.5)(net)
 
-        net = layers.Dense(units=64, activation='relu')(net)
+        net = layers.Dense(units=self.num_units * 2, activation='relu')(net)
         net = layers.BatchNormalization()(net)
         # net = layers.Dropout(0.5)(net)
 
-        net = layers.Dense(units=32, activation='relu')(net)
+        net = layers.Dense(units=self.num_units, activation='relu')(net)
         net = layers.BatchNormalization()(net)
         # net = layers.Dropout(0.5)(net)
 
@@ -62,7 +64,7 @@ class Actor:
         # Incorporate any additional losses here (e.g. from regularizers)
 
         # Define optimizer and training function
-        optimizer = optimizers.Adam(lr=0.0001)  # learning rate, normal setting is actor lr=0.0001, critic lr=0.001
+        optimizer = optimizers.Adam(lr=0.001)  # learning rate, normal setting is actor lr=0.0001, critic lr=0.001
 
         updates_op = optimizer.get_updates(params=self.model.trainable_weights, loss=loss)
         self.train_fn = K.function(

@@ -38,24 +38,18 @@ class Task():
 
         reward = 0.0
 
-        # 沿z轴方向的奖励
+        # z轴方向速度
         reward += self.sim.v[2]
 
-        # 沿z轴接近目标位置的奖励
-        reward -= (abs(self.sim.pose[2] - self.target_pos[2])) / 2.0
+        # 沿z轴方向接近目标位置
+        reward -= (abs(self.sim.pose[2] - self.target_pos[2]))
 
         # z轴上升奖励
         if self.sim.v[2] > 0:
             reward += 10 * self.sim.v[2]
-        else:
-            reward -= 10.0
 
         # 三个欧拉角的弧度
         reward -= (abs(self.sim.angular_v[:3])).sum()
-
-        # 达到/超过目标位置奖励
-        if self.sim.pose[2] >= self.target_pos[2]:
-            reward += 100.0
 
         return reward
 
@@ -67,6 +61,11 @@ class Task():
             done = self.sim.next_timestep(rotor_speeds)  # update the sim pose and velocities
             reward += self.get_reward()
             pose_all.append(self.sim.pose)
+
+            # 到达目标位置，结束任务
+            if self.sim.pose[2] >= self.target_pos[2]:
+                reward += 10
+                done = True
         next_state = np.concatenate(pose_all)
         return next_state, reward, done
 
