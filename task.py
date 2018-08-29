@@ -36,27 +36,30 @@ class Task():
         # task.sim.v：四轴飞行器在(x, y, z)坐标系中的速度。
         # task.sim.angular_v：三个欧拉角的弧度 / 每秒。
 
-        reward = 0.0
+        # reward = 0.0
+        #
+        # # z轴方向速度
+        # reward += self.sim.v[2]
+        #
+        # # 沿z轴接近目标位置的奖励
+        # reward -= (abs(self.sim.pose[2] - self.target_pos[2])) / 2.0
+        #
+        # # 达到/超过目标位置奖励
+        # if self.sim.pose[2] >= self.target_pos[2]:
+        #     reward += 100.0
+        #
+        # # z轴上升奖励
+        # if self.sim.v[2] > 0:
+        #     reward = 100 * self.sim.v[2]
+        # else:
+        #     reward = -100.0
+        #
+        # # 三个欧拉角的弧度
+        # reward -= (abs(self.sim.angular_v[:3])).sum()
 
-        # z轴方向速度
-        reward += self.sim.v[2]
-
-        # 沿z轴接近目标位置的奖励
-        reward -= (abs(self.sim.pose[2] - self.target_pos[2])) / 2.0
-
-        # 达到/超过目标位置奖励
-        if self.sim.pose[2] >= self.target_pos[2]:
-            reward += 100.0
-
-        # z轴上升奖励
-        if self.sim.v[2] > 0:
-            reward = 100 * self.sim.v[2]
-        else:
-            reward = -100.0
-
-        # 三个欧拉角的弧度
-        reward -= (abs(self.sim.angular_v[:3])).sum()
-
+        reward = -min(abs(self.target_pos[2] - self.sim.init_pose[2]), 20.0)
+        if self.sim.init_pose[2] >= self.target_pos[2]:
+            reward += 10
         return reward
 
     def step(self, rotor_speeds):
